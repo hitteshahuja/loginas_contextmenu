@@ -1,0 +1,46 @@
+#contextmenu_box{
+	background: #FFF;
+	margin-left:5px;
+	border: 1px solid #999;
+
+}
+#contextmenu_box .yui3-widget-hd{
+	font-weight: bold;
+	font-size: 10px;
+	text-align: center;
+	padding-top: 3px;
+	height: 15px;
+}
+#contextmenu {
+	padding:0;
+	margin:0;
+	font-size: 12px;
+	line-height: 2.3em;
+}
+#contextmenu li {
+	list-style-type:none;
+	padding:5px;
+	display:block;
+
+}
+#contextmenu li a {
+	color:black;
+}
+#contextmenu li a:hover {
+   text-decoration:none;
+}
+#contextmenu li img{
+    vertical-align:middle;
+    padding:5px;
+}
+#contextmenu_box #closecontext{
+	display:inline;
+	cursor: pointer;
+	float: right;
+	vertical-align: middle;
+}
+#contextmenu li:hover{
+	background-color :#E2E1E1;
+	cursor: pointer;
+	 }
+
