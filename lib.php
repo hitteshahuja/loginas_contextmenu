@@ -2,18 +2,37 @@
 global $PAGE;
 $pagetype =  $PAGE->bodyid;
 $loginas_link = "/course/loginas.php?";
-        
 //Only load the loginas module.js if the current logged in user has the capability
 $course  = $PAGE->course;
 $context = context_course::instance($course->id);
 $loginasenabled = get_config('local_loginas_contextmenu','enableloginas');
+$locationstring = get_config('local_loginas_contextmenu','loginaslocations');
+if(!empty($locationstring)){
+$locations = explode(',', get_config('local_loginas_contextmenu','loginaslocations'));	
+}
+//print_r($locations);
+$pagetypevalue = "";
+switch ($pagetype){
+	case 'page-enrol-users':
+		//Only on enrolled users page
+		if(in_array('enrolledusers', $locations)){
+			$pagetypevalue = $pagetype;
+		}
+	break;
+	case 'page-course-view-topics':
+		if(in_array('participants', $locations)){
+			$pagetypevalue = $pagetype;
+		}
+	break;
+}
+//echo "PTV: ".$pagetypevalue;
 if(!session_is_loggedinas() && has_capability('moodle/user:loginas',$context) && ($loginasenabled == 1) ){
 	$module              = array(
             'name' => 'loginas',
             'fullpath' => '/local/loginas_contextmenu/module.js'
             
         );
-        $params              = array($loginas_link,$pagetype);
+        $params              = array('loginaslink'=>$loginas_link,'pagetype'=>$pagetypevalue,'bodyid'=> $pagetype);
         $PAGE->requires->js_init_call('M.LoginAs.init', array(
             $params
         ), false, $module);

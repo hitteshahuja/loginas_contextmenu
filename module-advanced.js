@@ -6,17 +6,19 @@ M.LoginAs.init = function (Y, params) {
     console.log(params);
     var loginaslink = params.loginaslink;
     var bodyid = params.bodyid;
-    var pagetype = params.pagetype;
-    if (pagetype !== null) {
-            if (bodyid == M.LoginAs.ENROLPAGETYPE && pagetype ==M.LoginAs.ENROLPAGETYPE) {
+    var pagetypes = params.pagetypes;
+    if (pagetypes !== null) {
+        for (i = 0; i < pagetypes.length; i++) {
+            var pagetype = pagetypes[i];
+            if (bodyid == M.LoginAs.ENROLPAGETYPE && pagetype == 'enrolledusers') {
                 //Show on Enrolled Users page
                 var showonEnrolledUsersPage = true;
             }
-            if (bodyid == M.LoginAs.PARTICIPANTSPAGETYPE && pagetype == M.LoginAs.PARTICIPANTSPAGETYPE) {
+            if (bodyid == M.LoginAs.PARTICIPANTSPAGETYPE && pagetype == 'participants') {
                 //Show on Participants Page
                 var showonParticipantsPage = true;
             }
-         
+        }
     }
     YUI().use('overlay', 'querystring-parse', 'anim', function (Y) {
         //Declarations	
@@ -31,17 +33,19 @@ M.LoginAs.init = function (Y, params) {
         contextMenu.render('');
 
         var userNodes = null;
-        if (showonEnrolledUsersPage) {
+        if (bodyid == M.LoginAs.ENROLPAGETYPE) {
             userNodes = Y.all('.userenrolment .subfield_picture');
         }
-        if (showonParticipantsPage) {
+        if (bodyid == M.LoginAs.PARTICIPANTSPAGETYPE) {
             userNodes = Y.all('#participants .userpicture');
         }
+
         if (null != userNodes) {
             userNodes.on('contextmenu', showMenu, bodyid);
         }
         var showMenu = function (e) {
-            
+            console.log(showonEnrolledUsersPage);
+            if (showonEnrolledUsersPage || showonParticipantsPage) {
                 e.preventDefault();
                 Y.one('#contextmenu_box').setStyle('display', 'block');
                 //Get the url of the user
@@ -79,7 +83,7 @@ M.LoginAs.init = function (Y, params) {
                 } else {
                     contextMenu.show();
                 }
-            
+            }
 
         }
     }); //YUI use()
