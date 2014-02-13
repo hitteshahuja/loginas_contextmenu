@@ -1,24 +1,24 @@
 M.LoginAs = M.LoginAs || {};
 M.LoginAs.ENROLPAGETYPE = 'page-enrol-users';
-M.LoginAs.PARTICIPANTSPAGETYPE = 'page-course-view-weeks';
-M.LoginAs.init = function (Y, params) {
+M.LoginAs.PARTICIPANTSPAGETYPE = 'page-course-view';
 
-    console.log(params);
+M.LoginAs.init = function(Y, params){
+	var regex_participants = 'page-course-view-*';
     var loginaslink = params.loginaslink;
     var bodyid = params.bodyid;
     var pagetype = params.pagetype;
     if (pagetype !== null) {
-            if (bodyid == M.LoginAs.ENROLPAGETYPE && pagetype ==M.LoginAs.ENROLPAGETYPE) {
+            if (bodyid == M.LoginAs.ENROLPAGETYPE && pagetype == M.LoginAs.ENROLPAGETYPE) {
                 //Show on Enrolled Users page
                 var showonEnrolledUsersPage = true;
             }
-            if (bodyid == M.LoginAs.PARTICIPANTSPAGETYPE && pagetype == M.LoginAs.PARTICIPANTSPAGETYPE) {
+            //if (bodyid == M.LoginAs.PARTICIPANTSPAGETYPE && pagetype.match(regex_participants) !== null) {
+            	if (bodyid.match(regex_participants) !== null && pagetype.match(regex_participants) !== null) {
                 //Show on Participants Page
                 var showonParticipantsPage = true;
             }
-         
     }
-    YUI().use('overlay', 'querystring-parse', 'anim', function (Y) {
+    YUI().use('overlay',"event-contextmenu", 'querystring-parse', 'anim', function (Y) {
         //Declarations	
         var bodyContent = '<div id = "contextmenu_box"><ul id = "contextmenu\" ><li>Login As</li><li>View Profile</li></ul></div>';
         var contextMenu = new Y.Overlay({
@@ -27,21 +27,8 @@ M.LoginAs.init = function (Y, params) {
             width: "140px",
             zIndex: 2,
         });
-
         contextMenu.render('');
-
-        var userNodes = null;
-        if (showonEnrolledUsersPage) {
-            userNodes = Y.all('.userenrolment .subfield_picture');
-        }
-        if (showonParticipantsPage) {
-            userNodes = Y.all('#participants .userpicture');
-        }
-        if (null != userNodes) {
-            userNodes.on('contextmenu', showMenu, bodyid);
-        }
-        var showMenu = function (e) {
-            
+		 var showMenu = function (e) {
                 e.preventDefault();
                 Y.one('#contextmenu_box').setStyle('display', 'block');
                 //Get the url of the user
@@ -79,9 +66,22 @@ M.LoginAs.init = function (Y, params) {
                 } else {
                     contextMenu.show();
                 }
-            
-
+ 
         }
+        var userNodes = null;
+        if (showonEnrolledUsersPage) {
+            userNodes = Y.all('.userenrolment .subfield_picture');
+            console.log(userNodes);
+        }
+        if (showonParticipantsPage) {
+            userNodes = Y.all('#participants .userpicture');
+        }
+        if (null != userNodes) {
+        	console.log("Ready to use context menu on this page");
+        	//userNodes.on('contextmenu', function(){console.log("Right-click");}, bodyid);
+            userNodes.on('contextmenu', showMenu, bodyid);
+        }
+       
     }); //YUI use()
 
 }
